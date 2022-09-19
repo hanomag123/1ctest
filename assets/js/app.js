@@ -2433,7 +2433,6 @@ var tabsHeightSet = function tabsHeightSet(tabs) {
     }
   });
 };
-
 expandTogglers.forEach(function (item) {
   var textContainer = item.querySelector('[data-toggle-text]');
 
@@ -2584,7 +2583,157 @@ document.addEventListener('DOMContentLoaded', function () {
 
   showAnimations();
   document.addEventListener('scroll', showAnimations);
+
+  const busketCounter = () => {
+    const busketNumberContainer = document.querySelectorAll('.busket__inputNumberContainer')
+    const mainPrice = document.querySelector('.main-price')
+    if (busketNumberContainer.length > 0) {
+        busketNumberContainer.forEach(el => {
+            el.addEventListener('click', changeNumber)
+            el.addEventListener('input', () => {
+              let numberNow = +event.target.value
+              if (numberNow > 99) {
+                numberNow = 99
+              } else if (numberNow < 0) {
+                numberNow = 1
+              }
+              event.target.value = numberNow
+              changePrice(numberNow, mainPrice)
+            })
+            const input = this.querySelector('input.busket__number')
+            if (input) {
+              input.addEventListener('blur', () => {
+                if (input.value === '0') {
+                  input.value = 1
+                  changePrice(1, mainPrice)
+                }
+              })
+            }
+        })
+    }
+
+    function changeNumber (event) {
+        const numberElement = this.querySelector('.busket__number')
+        let numberNow = numberElement.value
+        if (Boolean(event.target.closest('.busket__inputPlus'))) {
+            numberNow >= 99 ? numberNow = 99 : numberNow++
+            numberElement.value = numberNow
+        } else if (Boolean(event.target.closest('.busket__inputMinus'))) {
+            numberNow <= 1 ? numberNow = 1 : numberNow--
+            numberElement.value = numberNow
+        }
+        changePrice(numberNow, mainPrice)
+    }
+}
+busketCounter()
+function changePrice(num, elem) {
+  elem.innerText = num * 950
+}
 });
+const priceRight = document.querySelector('.price-right')
+const selectFunc = () => {
+
+  var x, i, j, l, ll, selElmnt, a, b, c;
+  /* Look for any elements with the class "custom-select": */
+  x = document.getElementsByClassName("custom-select");
+  l = x.length;
+  for (i = 0; i < l; i++) {
+    selElmnt = x[i].getElementsByTagName("select")[0];
+    if (selElmnt.options[0].dataset.price) {
+      changeAnotherPrice(selElmnt.options[0].dataset.price, priceRight)
+    }
+    ll = selElmnt.length;
+    /* For each element, create a new DIV that will act as the selected item: */
+    a = document.createElement("DIV");
+    a.setAttribute("class", "select-selected select-selected--light");
+    a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+    x[i].appendChild(a);
+    /* For each element, create a new DIV that will contain the option list: */
+    b = document.createElement("DIV");
+    b.setAttribute("class", "select-items select-hide");
+    for (j = 1; j < ll; j++) {
+      /* For each option in the original select element,
+      create a new DIV that will act as an option item: */
+      c = document.createElement("DIV");
+      c.innerHTML = selElmnt.options[j].innerHTML;
+      c.addEventListener("click", function(e) {
+          /* When an item is clicked, update the original select box,
+          and the selected item: */
+          var y, i, k, s, h, sl, yl;
+          s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+          sl = s.length;
+          h = this.parentNode.previousSibling;
+          for (i = 0; i < sl; i++) {
+            if (s.options[i].innerHTML == this.innerHTML) {
+              const price = s.options[i].dataset.price
+              console.log(price)
+              s.selectedIndex = i;
+              h.innerHTML = this.innerHTML;
+              y = this.parentNode.getElementsByClassName("same-as-selected");
+              yl = y.length;
+              changeAnotherPrice(price, priceRight)
+              for (k = 0; k < yl; k++) {
+                y[k].removeAttribute("class");
+              }
+              this.setAttribute("class", "same-as-selected");
+              break;
+            }
+          }
+          h.click();
+      });
+      b.appendChild(c);
+    }
+    x[i].appendChild(b);
+    a.addEventListener("click", function(e) {
+      /* When the select box is clicked, close any other select boxes,
+      and open/close the current select box: */
+      e.stopPropagation();
+      closeAllSelect(this);
+      this.nextSibling.classList.toggle("select-hide");
+      this.classList.toggle("select-arrow-active");
+    });
+  }
+  function changeAnotherPrice (price, el) {
+    el.innerHTML = price
+  }
+  const select = document.querySelector('.custom-select')
+  if (select) {
+    select.addEventListener('change', function select() {
+      console.log(this)
+    })
+  }
+  function closeAllSelect(elmnt) {
+    /* A function that will close all select boxes in the document,
+    except the current select box: */
+    var x, y, i, xl, yl, arrNo = [];
+    x = document.getElementsByClassName("select-items");
+    y = document.getElementsByClassName("select-selected");
+    xl = x.length;
+    yl = y.length;
+    for (i = 0; i < yl; i++) {
+      if (elmnt == y[i]) {
+        arrNo.push(i)
+        y[i].classList.remove('select-selected--light')
+      } else {
+        y[i].classList.remove("select-arrow-active");
+      }
+    }
+    for (i = 0; i < xl; i++) {
+      if (!x[i].querySelector('.same-as-selected')) {
+        x[i].previousSibling.classList.add('select-selected--light')
+      }
+      if (arrNo.indexOf(i)) {
+        x[i].classList.add("select-hide");
+      }
+    }
+  }
+  
+  /* If the user clicks anywhere outside the select box,
+  then close all select boxes: */
+  document.addEventListener("click", closeAllSelect);
+}
+
+selectFunc()
 
 },{"../modules/_functions":33}],12:[function(require,module,exports){
 "use strict";
@@ -2822,11 +2971,11 @@ window.onload = function () {
       });
     });
   }
-  document.addEventListener('DOMNodeInserted', () => {
-    if (event.target) {
-      event.target.remove()
-    }
-  })
+  // document.addEventListener('DOMNodeInserted', () => {
+  //   if (event.target) {
+  //     event.target.remove()
+  //   }
+  // })
 };
 
 },{"js-cookie":4}],18:[function(require,module,exports){
@@ -3362,7 +3511,14 @@ function closePopupByOuterClick(event) {
     closeModal();
   }
 }
-
+function changeInput(name, value) {
+  const input = document.querySelector(`input[name="${name}"]`)
+  if (input) {
+    input.setAttribute('value', value)
+  } else {
+    console.log('No input')
+  }
+  }
 function openModal(id, title) {
   var modal = document.getElementById(id);
   var modalTitle = modal.querySelector('.form__title');
@@ -3432,11 +3588,21 @@ openButtons.forEach(function (btn) {
     e.preventDefault();
     var id = btn.getAttribute('data-target').replace('#', '');
     var title = btn.getAttribute('data-modal-title');
-
+    const tarif = btn.getAttribute('data-tarif')
     if ('modal-file' === id) {
       addFile(btn, id);
     }
-
+    if (tarif === 'web') {
+      const numberNow = document.querySelector('input.busket__number')
+      if (numberNow) {
+        changeInput('numberOfUsers', numberNow.value)
+        changeInput('tarif', 'web')
+      }
+    } else if (tarif === 'RDP') {
+      const select = document.querySelector('.custom-select select')
+      changeInput('numberOfUsers', select.value)
+      changeInput('tarif', 'rdp')
+    }
     openModal(id, title);
   });
 });
