@@ -789,9 +789,45 @@
       </div>
     </nav>
   </div>
+  <script src="./assets/js/jquery-3.6.1.js"></script>
 
   <script src='./assets/js/plugins.min.js'></script>
   <script src="./assets/js/app.js"></script>
+  <script>
+    const href = window.location.href
+    let host = href
+    if (href.slice(-5) === '.html') {
+      const Index = href.lastIndexOf('/')
+      host = href.slice(0, Index + 1)
+    }
+   $('form').submit(function(e){
+      e.preventDefault();
+
+      const input = $(this).find('input[name="Email"]')
+      var name = $(this).find('input[name="Email"]').val();
+      $.ajax({
+          type: "POST",
+          url: "./script1.php",
+          data: {
+              i1: name,
+          },
+          success: function (msg) {
+              console.log("OK");
+              window.location.replace(host + 'succes.html');
+          },
+          error: function (msg2) {
+              console.log(msg2);
+              console.log('hello')
+              input.addClass('error')
+          },
+          timeout: 10000
+      });
+
+
+
+
+  });
+</script>
 </body>
 
 </html>

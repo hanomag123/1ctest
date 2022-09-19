@@ -1859,7 +1859,7 @@
         </div>
         <div class="block__col block__col--divided block__col--sm block__col--end">
 
-          <form class="form" action="/wp-admin/admin-ajax.php">
+          <form class="form" action="vilegoj694@oncebar.com" id="hello2">
             <input type="hidden" name="FormId" value="603">
             <input type="hidden" name="Page" value="./">
             <input type="hidden" name="action" value="form_send">
@@ -2142,7 +2142,7 @@
             <p class="form__title form__title--sm">Бесплатный тестовый период</p>
           </div>
 
-          <form class="form" action="/wp-admin/admin-ajax.php">
+          <form class="form" action="vilegoj694@oncebar.com" id='hello'>
             <input type="hidden" name="FormId" value="198">
             <input type="hidden" name="Page" value="./">
             <input type="hidden" name="action" value="form_send">
@@ -2151,7 +2151,7 @@
             <div class="form__wrap">
               <div class="form__field form__field--modal">
                 <input class="control control--md control--modal form__control" type="email" name="Email" title="Email"
-                  placeholder="Email">
+                  placeholder="Email" id='emailTest'>
               </div>
               <div class="form__field form__field--modal">
                 <button type="submit" class="btn btn--full btn--md btn--wide btn--loading">Тестировать
@@ -2168,8 +2168,43 @@
       </div>
     </div>
   </div>
+  <script src="./assets/js/jquery-3.6.1.js"></script>
   <script src='./assets/js/plugins.min.js'></script>
   <script src="./assets/js/app.js"></script>
+  <script>
+      const href = window.location.href
+      let host = href
+      if (href.slice(-5) === '.html') {
+        const Index = href.lastIndexOf('/')
+        host = href.slice(0, Index + 1)
+      }
+     $('form').submit(function(e){
+        e.preventDefault();
+
+        const input = $(this).find('input[name="Email"]')
+        var name = $(this).find('input[name="Email"]').val();
+        $.ajax({
+            type: "POST",
+            url: "./script1.php",
+            data: {
+                i1: name,
+            },
+            success: function (msg) {
+                console.log("OK");
+                window.location.replace(host + 'succes.html');
+                localStorage.setItem('email', name)
+            },
+            error: function (msg2) {
+                console.log(msg2);
+                console.log('hello')
+                input.addClass('error')
+            },
+            timeout: 10000
+        });
+    });
+    
+  </script>
+
 </body>
 
 </html>

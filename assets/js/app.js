@@ -2855,57 +2855,57 @@ forms.forEach(function (item) {
       clearInputError(e.target);
     });
   });
-  item.addEventListener('submit', function (e) {
-    var form = e.target;
-    var url = form.getAttribute('action');
-    var formData = new FormData(form);
-    var inputs = form.querySelectorAll(_constants.FORM.control);
-    var fileInput = form.querySelector('input[type="file"]');
-    var ajax = new _ajaxHandler["default"]({
-      'url': url,
-      'form': form
-    });
-    formData.append('csrf_token', document.getElementById('csrf-token').getAttribute('content'));
+  // item.addEventListener('submit', function (e) {
+  //   var form = e.target;
+  //   var url = form.getAttribute('action');
+  //   var formData = new FormData(form);
+  //   var inputs = form.querySelectorAll(_constants.FORM.control);
+  //   var fileInput = form.querySelector('input[type="file"]');
+  //   var ajax = new _ajaxHandler["default"]({
+  //     'url': url,
+  //     'form': form
+  //   });
+  //   formData.append('csrf_token', document.getElementById('csrf-token').getAttribute('content'));
 
-    if (fileInput) {
-      for (var i = 0; i < fileInput.files.length; i++) {
-        formData.append('files[]', fileInput.files[i]);
-      }
-    }
+  //   if (fileInput) {
+  //     for (var i = 0; i < fileInput.files.length; i++) {
+  //       formData.append('files[]', fileInput.files[i]);
+  //     }
+  //   }
 
-    inputs.forEach(function (input) {
-      return clearInputError(input);
-    });
-    ajax.send(formData, function () {
-      var response = ajax.response;
-      var currentModal = form.closest(_constants.MODAL.module);
-      inputs.forEach(function (input) {
-        return input.value = '';
-      });
-      (0, _ctaGoals.reachGoals)(response.counters.goals.ym, response.counters.goals.ga, response.counters.goals.gads);
+  //   inputs.forEach(function (input) {
+  //     return clearInputError(input);
+  //   });
+  //   ajax.send(formData, function () {
+  //     var response = ajax.response;
+  //     var currentModal = form.closest(_constants.MODAL.module);
+  //     inputs.forEach(function (input) {
+  //       return input.value = '';
+  //     });
+  //     (0, _ctaGoals.reachGoals)(response.counters.goals.ym, response.counters.goals.ga, response.counters.goals.gads);
 
-      if ('success_modal' === response.type) {
-        var currentResponse = document.getElementById(_constants.MODAL.successId).querySelector(_constants.MODAL.response);
-        currentResponse.innerHTML = response.message;
-        currentResponse.classList.add('show');
-        (0, _modal.openModal)(_constants.MODAL.successId);
-        setFormDefaults(form);
-      } else if (response.type === 'same_modal') {
-        var _currentResponse = currentModal.querySelector(_constants.MODAL.response);
+  //     if ('success_modal' === response.type) {
+  //       var currentResponse = document.getElementById(_constants.MODAL.successId).querySelector(_constants.MODAL.response);
+  //       currentResponse.innerHTML = response.message;
+  //       currentResponse.classList.add('show');
+  //       (0, _modal.openModal)(_constants.MODAL.successId);
+  //       setFormDefaults(form);
+  //     } else if (response.type === 'same_modal') {
+  //       var _currentResponse = currentModal.querySelector(_constants.MODAL.response);
 
-        currentModal.querySelector(_constants.MODAL.content).classList.add('hide');
+  //       currentModal.querySelector(_constants.MODAL.content).classList.add('hide');
 
-        _currentResponse.classList.add('show');
+  //       _currentResponse.classList.add('show');
 
-        _currentResponse.innerHTML = response.message;
-      } else {
-        window.location.replace('https://' + window.location.hostname + '/success/');
-      }
-    }, function () {
-      onResponseFalse(form, ajax.response);
-    });
-    e.preventDefault();
-  });
+  //       _currentResponse.innerHTML = response.message;
+  //     } else {
+  //       window.location.replace('https://' + window.location.hostname + '/success/');
+  //     }
+  //   }, function () {
+  //     onResponseFalse(form, ajax.response);
+  //   });
+  //   e.preventDefault();
+  // });
 });
 
 function onResponseFalse(form, response) {
