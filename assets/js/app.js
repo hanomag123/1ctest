@@ -2400,7 +2400,42 @@ window.addEventListener('DOMContentLoaded', function () {
     });
   });
 
+  const href = window.location.href
+  let host = href
+  if (href.slice(-5) === '.html') {
+    const Index = href.lastIndexOf('/')
+    host = href.slice(0, Index + 1)
+  }
+  for(let form of document.forms) {
+    form.addEventListener('submit', async function submitHandler(event) {
+      event.preventDefault()
+      const input = this.querySelector('input[name="Email"]')
+      const inputs = this.querySelectorAll('input')
+        input.addEventListener('focus', function changeError() {
+          if (this.classList.contains('error')) {
+            this.classList.remove('error')
+            this.parentElement.querySelector('.error-msg').remove()
+          }
+        })
+      try {
+        const req = await fetch('./script1.php', {
+        method: "POST",
+        body: new FormData(form)
+        })
+        const res = await req
+        if (res.ok) {
+          window.location.replace(host + 'succes.html');
+          localStorage.setItem('email', input.value)
+        } else {
+          input.insertAdjacentHTML('afterend', "<span class='error-msg'>Ошибка</span>")
+          input.classList.add('error')
+        }
 
+      } catch (error) {
+        throw new Error(error)
+      }
+    })
+  }
 });
 document.querySelectorAll('.form__wrap').forEach(function (form) {
   var cloud = form.previousSibling;
